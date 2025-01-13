@@ -296,24 +296,6 @@ class RocProfCompute:
         return
 
     @demarcate
-    def update_db(self):
-        self.print_graphic()
-        from utils.db_connector import DatabaseConnector
-
-        db_connection = DatabaseConnector(self.__args)
-
-        # -----------------------
-        # run database workflow
-        # -----------------------
-        db_connection.pre_processing()
-        if self.__args.upload:
-            db_connection.db_import()
-        else:
-            db_connection.db_remove()
-
-        return
-
-    @demarcate
     def run_analysis(self):
         self.print_graphic()
 
