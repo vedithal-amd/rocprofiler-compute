@@ -29,6 +29,7 @@ dash python library: MIT
 matplotlib python library: PSFL
 numpy python library: BSD
 pandas python library: BSD
+pymongo python library: Apache 2.0 license
 pyyaml python library: MIT
 tabulate python library: MIT
 tqdm python library: MIT
