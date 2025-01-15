@@ -388,6 +388,9 @@ add_custom_target(
         ${Python3_EXECUTABLE} -m nuitka --mode=onefile --include-data-files=${PROJECT_SOURCE_DIR}/VERSION*=./
         --enable-plugin=no-qt --include-package-data=dash_svg --include-package=dash_bootstrap_components
         --include-package=rocprof_compute_soc --include-package-data=rocprof_compute_soc --include-package-data=utils rocprof-compute
+    # Remove library rpath from executable
+    COMMAND
+        patchelf --remove-rpath rocprof-compute.bin
     # Move to build directory
     COMMAND
         mv rocprof-compute.bin ${CMAKE_BINARY_DIR}
