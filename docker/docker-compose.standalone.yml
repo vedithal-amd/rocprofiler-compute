@@ -1,7 +1,7 @@
 services:
   app:
     build:
-      context: ../../
+      context: ../
       dockerfile: utils/docker_env/Dockerfile.standalone
     devices:
       - /dev/kfd
@@ -9,4 +9,4 @@ services:
     security_opt:
       - seccomp:unconfined
     volumes:
-      - ../../:/app
+      - ../:/app
