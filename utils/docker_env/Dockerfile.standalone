@@ -1,8 +1,8 @@
-FROM compute-artifactory.amd.com:5000/rocm-base-images/rhel-8.x-bld:2024112501
+FROM redhat/ubi8:8.10-1184
 
 WORKDIR /app
 
-RUN yum install -y jq curl
+RUN yum install -y curl gcc cmake
 
 RUN yum install -y python38 python38-devel && \
     yum clean all && \
