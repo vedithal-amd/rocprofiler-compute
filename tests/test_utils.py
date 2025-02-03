@@ -24,12 +24,12 @@
 # Common helper routines for testing collateral
 
 import inspect
-from importlib.machinery import SourceFileLoader
 import os
 import shutil
+import subprocess
+from importlib.machinery import SourceFileLoader
 from pathlib import Path
 from unittest.mock import patch
-import subprocess
 
 import pandas as pd
 import pytest
