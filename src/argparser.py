@@ -24,6 +24,7 @@
 
 import argparse
 import os
+import re
 import shutil
 from pathlib import Path
 
@@ -114,7 +115,6 @@ Examples:
         type=str,
         metavar="",
         dest="name",
-        required=True,
         help="\t\t\tAssign a name to workload.",
     )
     profile_group.add_argument("--target", type=str, default=None, help=argparse.SUPPRESS)
@@ -154,7 +154,7 @@ Examples:
         default=False,
         action="store_true",
         help=argparse.SUPPRESS,
-        #help="\t\t\tKokkos trace, traces Kokkos API calls.",
+        # help="\t\t\tKokkos trace, traces Kokkos API calls.",
     )
     profile_group.add_argument(
         "-k",
@@ -177,16 +177,65 @@ Examples:
         required=False,
         help="\t\t\tDispatch ID filtering.",
     )
+
+    class AggregateDict(argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            aggregated_dict = getattr(namespace, self.dest, {})
+            if aggregated_dict is None:
+                aggregated_dict = {}
+            for key, value in values:
+                aggregated_dict[key] = value
+            setattr(namespace, self.dest, aggregated_dict)
+
+    def validate_block(value):
+        # Metric id regex, for example, 10, 4, 4.3, 4.32
+        # Dont allow more than two digits after decimal point
+        metric_id_pattern = re.compile(r"^\d+$|^\d\.\d$|^\d+\.\d\d$")
+        # Allow only the following hardware blocks
+        hardware_block_pattern = re.compile(r"^(SQ|SQC|TA|TD|TCP|TCC|SPI|CPC|CPF)$")
+        if metric_id_pattern.match(value):
+            return (str(value), "metric_id")
+        if hardware_block_pattern.match(value):
+            return (str(value), "hardware_block")
+        raise argparse.ArgumentTypeError(f"Invalid hardware block or metric id: {value}")
+
     profile_group.add_argument(
         "-b",
         "--block",
-        type=str,
-        dest="ipblocks",
+        type=validate_block,
+        action=AggregateDict,
+        dest="filter_blocks",
         metavar="",
         nargs="+",
         required=False,
-        choices=["SQ", "SQC", "TA", "TD", "TCP", "TCC", "SPI", "CPC", "CPF"],
-        help="\t\t\tHardware block filtering:\n\t\t\t   SQ\n\t\t\t   SQC\n\t\t\t   TA\n\t\t\t   TD\n\t\t\t   TCP\n\t\t\t   TCC\n\t\t\t   SPI\n\t\t\t   CPC\n\t\t\t   CPF",
+        default={},
+        help="""\t\t\tSpecify metric id(s) from --list-metrics for filtering (e.g. 10, 4, 4.3).
+    \t\t\tCan provide multiple space separated arguments.
+    \t\t\tCan also accept Hardware blocks.
+    \t\t\tHardware block filtering (to be deprecated soon):
+    \t\t\t   SQ
+    \t\t\t   SQC
+    \t\t\t   TA
+    \t\t\t   TD
+    \t\t\t   TCP
+    \t\t\t   TCC
+    \t\t\t   SPI
+    \t\t\t   CPC
+    \t\t\t   CPF""",
+    )
+    profile_group.add_argument(
+        "--list-metrics",
+        metavar="",
+        nargs="?",
+        const="",
+        help=print_avail_arch(supported_archs.keys()),
+    )
+    profile_group.add_argument(
+        "--config-dir",
+        dest="config_dir",
+        metavar="",
+        help="\t\tSpecify the directory of customized report section configs.",
+        default=rocprof_compute_home.joinpath("rocprof_compute_soc/analysis_configs/"),
     )
 
     result = shutil.which("rocscope")
@@ -487,7 +536,7 @@ Examples:
         dest="filter_metrics",
         metavar="",
         nargs="+",
-        help="\t\tSpecify hardware block/metric id(s) from --list-metrics for filtering.",
+        help="\t\tSpecify metric id(s) from --list-metrics for filtering.",
     )
     analyze_group.add_argument(
         "--gpu-id",
