@@ -92,6 +92,8 @@ class gfx942_soc(OmniSoC_Base):
     def profiling_setup(self):
         """Perform any SoC-specific setup prior to profiling."""
         super().profiling_setup()
+        # Report section filtering
+        self.section_filter()
         # Performance counter filtering
         self.perfmon_filter(self.get_args().roof_only)
 

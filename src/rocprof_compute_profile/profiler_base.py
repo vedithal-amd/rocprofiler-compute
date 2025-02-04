@@ -302,6 +302,10 @@ class RocProfCompute_Base:
             console_log("Hardware Blocks: All")
         else:
             console_log("Hardware Blocks: " + str(self.__args.ipblocks))
+        if self.__args.sections == None:
+            console_log("Report Sections: All")
+        else:
+            console_log("Report Sections: " + str(self.__args.sections))
 
         msg = "Collecting Performance Counters"
         (

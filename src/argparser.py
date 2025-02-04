@@ -187,6 +187,24 @@ Examples:
         choices=["SQ", "SQC", "TA", "TD", "TCP", "TCC", "SPI", "CPC", "CPF"],
         help="\t\t\tHardware block filtering:\n\t\t\t   SQ\n\t\t\t   SQC\n\t\t\t   TA\n\t\t\t   TD\n\t\t\t   TCP\n\t\t\t   TCC\n\t\t\t   SPI\n\t\t\t   CPC\n\t\t\t   CPF",
     )
+    profile_group.add_argument(
+        "--section",
+        type=str,
+        dest="sections",
+        metavar="",
+        nargs="+",
+        required=False,
+        default=[],
+        choices=["SOL", "MEMCHART", "WAVEFRONT", "INSTMIX"],
+        help="\t\t\tReport section filtering, only collect counters necessary for selected report sections, by default all counters are collected:\n\t\t\t   SOL (System Speed-of-Light)\n\t\t\t   MEMCHART (Memory Chart)\n\t\t\t   WAVEFRONT (Wavefront Launch Stats)\n\t\t\t   INSTMIX (Compute Units - Instruction Mix)",
+    )
+    profile_group.add_argument(
+        "--config-dir",
+        dest="config_dir",
+        metavar="",
+        help="\t\tSpecify the directory of customized report section configs.",
+        default=rocprof_compute_home.joinpath("rocprof_compute_soc/analysis_configs/"),
+    )
 
     result = shutil.which("rocscope")
     if result:

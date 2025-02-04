@@ -35,6 +35,7 @@ import numpy as np
 
 from rocprof_compute_base import MI300_CHIP_IDS, SUPPORTED_ARCHS
 from utils.utils import console_debug, console_error, console_log, demarcate
+from utils.parser import build_in_vars, supported_denom
 
 
 class OmniSoC_Base:
@@ -48,6 +49,7 @@ class OmniSoC_Base:
         self.__perfmon_config = (
             {}
         )  # Per IP block max number of simulutaneous counters. GFX IP Blocks
+        self.__section_counters = set()  # hw counters corresponding to filtered sections
         self.__soc_params = {}  # SoC specifications
         self.__compatible_profilers = []  # Store profilers compatible with SoC
         self.populate_mspec()
@@ -196,6 +198,29 @@ class OmniSoC_Base:
         )
 
     @demarcate
+    def section_filter(self):
+        """
+        Create a set of counters required for the selected report sections.
+        Parse analysis report configuration files based on the selected report sections to be filtered.
+        """
+        args = self.__args
+        report_files_dict = {
+            "SOL": "0200_system-speed-of-light.yaml",
+            "MEMCHART": "0300_mem_chart.yaml",
+            "WAVEFRONT": "0700_wavefront-launch.yaml",
+            "INSTMIX": "1000_compute-unit-instruction-mix.yaml",
+        }
+        for section in args.sections:
+            self.__section_counters = self.__section_counters.union(
+                parse_counters(
+                    Path(args.config_dir)
+                    .joinpath(self.__arch, report_files_dict.get(section))
+                    .absolute()
+                    .resolve()
+                )
+            )
+
+    @demarcate
     def perfmon_filter(self, roofline_perfmon_only: bool):
         """Filter default performance counter set based on user arguments"""
         if (
@@ -250,6 +275,7 @@ class OmniSoC_Base:
             self.__perfmon_config,
             self.__workload_dir,
             self.get_args().spatial_multiplexing,
+            self.__section_counters,
         )
 
     # ----------------------------------------------------
@@ -316,7 +342,40 @@ def using_v3():
 
 
 @demarcate
-def perfmon_coalesce(pmc_files_list, perfmon_config, workload_dir, spatial_multiplexing):
+def parse_counters(report_config_file):
+    """
+    Create a set of all hardware counters mentioned in the given report configuration file
+    """
+    # hw counter name should start with ip block name
+    hw_counter_regex = r"(?:SQ|SQC|TA|TD|TCP|TCC|CPC|CPF|SPI|GRBM)_[0-9A-Za-z_]+"
+    # only capture the variable name after $ using capturing group
+    variable_regex = r"\$([0-9A-Za-z_]+)"
+    with open(report_config_file, "r") as fp:
+        config_content = fp.read()
+    hw_counter_matches = set(re.findall(hw_counter_regex, config_content))
+    variable_matches = set(re.findall(variable_regex, config_content))
+    # get hw counters and variables for all supported denominators
+    for formula in supported_denom.values():
+        hw_counter_matches.update(re.findall(hw_counter_regex, formula))
+        variable_matches.update(re.findall(variable_regex, formula))
+    # get hw counters corresponding to variables recursively
+    while variable_matches:
+        subvariable_matches = set()
+        for var in variable_matches:
+            if var in build_in_vars:
+                hw_counter_matches.update(
+                    re.findall(hw_counter_regex, build_in_vars[var])
+                )
+                subvariable_matches.update(re.findall(variable_regex, build_in_vars[var]))
+        # process new found variables
+        variable_matches = subvariable_matches - variable_matches
+    return list(hw_counter_matches)
+
+
+@demarcate
+def perfmon_coalesce(
+    pmc_files_list, perfmon_config, workload_dir, spatial_multiplexing, section_counters
+):
     """Sort and bucket all related performance counters to minimize required application passes"""
     workload_perfmon_dir = workload_dir + "/perfmon"
 
@@ -385,6 +444,47 @@ def perfmon_coalesce(pmc_files_list, perfmon_config, workload_dir, spatial_multi
         for accu in accus:
             if accu in normal_counters:
                 del normal_counters[accu]
+
+    # If section report filters have been provided, only collect counters necessary for those section reports
+    # Remove _sum and _expand suffixes while matching
+    def remove_suffixes(string):
+        for suffix in ["_sum", "_expand"]:
+            if string.endswith(suffix):
+                string = string[: -len(suffix)]
+                break
+        return string
+
+    section_counters = {remove_suffixes(counter) for counter in section_counters}
+
+    if section_counters:
+        # Remove unnecessary normal counters
+        for counter_name in list(normal_counters.keys()):
+            if remove_suffixes(counter_name) not in section_counters:
+                del normal_counters[counter_name]
+                console_log(
+                    f"Not collecting counter {counter_name} per provided section filter"
+                )
+
+        # Remove unnecessary accumulate counters
+        filtered_accumlate_counters = list()
+        for counters in accumulate_counters:
+            if any(
+                remove_suffixes(counter_name) in section_counters
+                for counter_name in counters
+            ):
+                filtered_accumlate_counters.append(counters)
+            else:
+                console_log(
+                    f"Not collecting counters {counters} per provided section filter"
+                )
+        accumulate_counters = filtered_accumlate_counters
+
+    # Throw error if no counters to be collected
+    if len(normal_counters) == 0 and len(accumulate_counters) == 0:
+        console_error(
+            "profiling",
+            "No performance counters to collect. Please check the provided report section filters and ip block filters.",
+        )
 
     output_files = []
 
