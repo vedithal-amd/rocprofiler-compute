@@ -2,7 +2,7 @@ services:
   app:
     build:
       context: ../
-      dockerfile: utils/docker_env/Dockerfile.standalone
+      dockerfile: docker/Dockerfile.standalone
     devices:
       - /dev/kfd
       - /dev/dri

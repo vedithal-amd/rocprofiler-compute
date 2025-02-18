@@ -38,7 +38,7 @@ Users may checkout `amd-staging` to preview upcoming features.
 
 To quickly get the environment (bash shell) for building and testing, run the following commands:
 * `cd docker`
-* `docker compose run app`
+* `docker compose run -f docker-compose.test.yml app`
 
 Inside the docker container, clean, build and install the project with tests enabled:
 ```

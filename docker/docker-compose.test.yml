@@ -2,7 +2,7 @@ services:
   app:
     build:
       context: ../
-      dockerfile: utils/docker_env/Dockerfile
+      dockerfile: docker/Dockerfile.test
     devices:
       - /dev/kfd
       - /dev/dri
