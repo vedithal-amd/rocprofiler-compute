@@ -134,7 +134,7 @@ def check_csv_files(output_dir, num_devices, num_kernels):
 
 @pytest.fixture
 def binary_handler_profile_rocprof_compute(request):
-    def _handler(config, workload_dir, options=[], check_success=True):
+    def _handler(config, workload_dir, options=[], check_success=True, roof=False):
         if request.config.getoption("--call-binary"):
             baseline_opts = [
                 "build/rocprof-compute.bin",
@@ -143,6 +143,8 @@ def binary_handler_profile_rocprof_compute(request):
                 "app_1",
                 "-VVV",
             ]
+            if not roof:
+                baseline_opts.append("--no-roof")
             process = subprocess.run(
                 baseline_opts
                 + options
@@ -150,13 +152,14 @@ def binary_handler_profile_rocprof_compute(request):
                 + config["app_1"],
                 text=True,
             )
-            print("run binary")
             # verify run status
             if check_success:
                 assert process.returncode == 0
             return process.returncode
         else:
             baseline_opts = ["rocprof-compute", "profile", "-n", "app_1", "-VVV"]
+            if not roof:
+                baseline_opts.append("--no-roof")
             with pytest.raises(SystemExit) as e:
                 with patch(
                     "sys.argv",
@@ -169,7 +172,7 @@ def binary_handler_profile_rocprof_compute(request):
             # verify run status
             if check_success:
                 assert e.value.code == 0
-            return e
+            return e.value.code
 
     return _handler
 

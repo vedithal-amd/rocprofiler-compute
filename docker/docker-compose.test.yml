@@ -1,5 +1,5 @@
 services:
-  app:
+  test:
     build:
       context: ../
       dockerfile: docker/Dockerfile.test
@@ -8,3 +8,5 @@ services:
       - /dev/dri
     security_opt:
       - seccomp:unconfined
+    volumes:
+      - ../:/app

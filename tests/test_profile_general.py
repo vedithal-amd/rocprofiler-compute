@@ -45,7 +45,6 @@ config["METRIC_LOGGING"] = False
 
 num_kernels = 3
 num_devices = 1
-dispatch_id = 0
 
 DEFAULT_ABS_DIFF = 15
 DEFAULT_REL_DIFF = 50
@@ -513,22 +512,22 @@ def test_path(binary_handler_profile_rocprof_compute):
 
 
 @pytest.mark.misc
-def test_kernel_names():
-    options = ["--roof-only", "--kernel-names"]
+def test_kernel_names(binary_handler_profile_rocprof_compute):
+    options = ["--device", "0", "--roof-only", "--kernel-names"]
     workload_dir = test_utils.get_output_dir()
-    e = binary_handler_profile_rocprof_compute(
-        config, workload_dir, options, check_success=False
+    returncode = binary_handler_profile_rocprof_compute(
+        config, workload_dir, options, check_success=False, roof=True
     )
 
     if soc == "MI100":
         # assert that it did not run
-        assert e.value.code >= 1
+        assert returncode >= 1
         # Do not continue testing
         return
     # assert successful run
-    assert e.value.code == 0
+    assert returncode == 0
 
-    file_dict = test_utils.check_csv_files(workload_dir, num_devices, num_kernels)
+    file_dict = test_utils.check_csv_files(workload_dir, 1 , num_kernels)
     if soc == "MI200" or "MI300" in soc:
         assert sorted(list(file_dict.keys())) == sorted(
             ROOF_ONLY_FILES + ["kernelName_legend.pdf"]
@@ -547,11 +546,7 @@ def test_kernel_names():
 
 @pytest.mark.misc
 def test_device_filter(binary_handler_profile_rocprof_compute):
-    device_id = "0"
-    # if "HIP_VISIBLE_DEVICES" in os.environ:
-    #     device_id = os.environ["HIP_VISIBLE_DEVICES"]
-
-    options = ["--device", device_id]
+    options = ["--device", "0"]
     workload_dir = test_utils.get_output_dir()
     binary_handler_profile_rocprof_compute(config, workload_dir, options)
 
@@ -1250,7 +1245,7 @@ def test_dispatch_0_1(binary_handler_profile_rocprof_compute):
 
 @pytest.mark.dispatch
 def test_dispatch_2(binary_handler_profile_rocprof_compute):
-    options = ["--dispatch", dispatch_id]
+    options = ["--dispatch", "0"]
     workload_dir = test_utils.get_output_dir()
     binary_handler_profile_rocprof_compute(config, workload_dir, options)
 
@@ -1271,7 +1266,7 @@ def test_dispatch_2(binary_handler_profile_rocprof_compute):
         file_dict,
         [
             "--dispatch",
-            str(dispatch_id),
+            "0",
         ],
     )
 
@@ -1332,22 +1327,22 @@ def test_join_type_kernel(binary_handler_profile_rocprof_compute):
 
 
 @pytest.mark.sort
-def test_sort_dispatches():
+def test_sort_dispatches(binary_handler_profile_rocprof_compute):
     # only test 1 device for roofline
     options = ["--device", "0", "--roof-only", "--sort", "dispatches"]
     workload_dir = test_utils.get_output_dir()
-    e = binary_handler_profile_rocprof_compute(
-        config, workload_dir, options, check_success=False
+    returncode = binary_handler_profile_rocprof_compute(
+        config, workload_dir, options, check_success=False, roof=True
     )
 
     if soc == "MI100":
         # assert that it did not run
-        assert e.value.code >= 1
+        assert returncode >= 1
         # Do not continue testing
         return
 
     # assert successful run
-    assert e.value.code == 0
+    assert returncode == 0
 
     file_dict = test_utils.check_csv_files(workload_dir, 1, num_kernels)
 
@@ -1366,55 +1361,22 @@ def test_sort_dispatches():
 
 
 @pytest.mark.sort
-def test_sort_kernels():
+def test_sort_kernels(binary_handler_profile_rocprof_compute):
     # only test 1 device for roofline
     options = ["--device", "0", "--roof-only", "--sort", "kernels"]
     workload_dir = test_utils.get_output_dir()
-    e = binary_handler_profile_rocprof_compute(
-        config, workload_dir, options, check_success=False
+    returncode = binary_handler_profile_rocprof_compute(
+        config, workload_dir, options, check_success=False, roof=True
     )
 
     if soc == "MI100":
         # assert that it did not run
-        assert e.value.code >= 1
+        assert returncode >= 1
         # Do not continue testing
         return
 
     # assert successful run
-    assert e.value.code == 0
-    file_dict = test_utils.check_csv_files(workload_dir, num_devices, num_kernels)
-
-    if soc == "MI200" or "MI300" in soc:
-        assert sorted(list(file_dict.keys())) == ROOF_ONLY_FILES
-    else:
-        assert sorted(list(file_dict.keys())) == ALL_CSVS
-
-    validate(
-        inspect.stack()[0][3],
-        workload_dir,
-        file_dict,
-    )
-
-    test_utils.clean_output_dir(config["cleanup"], workload_dir)
-
-
-@pytest.mark.mem
-def test_mem_levels_vL1D():
-    # only test 1 device for roofline
-    options = ["--device", "0", "--roof-only", "--mem-level", "vL1D"]
-    workload_dir = test_utils.get_output_dir()
-    e = binary_handler_profile_rocprof_compute(
-        config, workload_dir, options, check_success=False
-    )
-
-    if soc == "MI100":
-        # assert that it did not run
-        assert e.value.code >= 1
-        # Do not continue testing
-        return
-
-    # assert successful run
-    assert e.value.code == 0
+    assert returncode == 0
     file_dict = test_utils.check_csv_files(workload_dir, 1, num_kernels)
 
     if soc == "MI200" or "MI300" in soc:
@@ -1432,23 +1394,56 @@ def test_mem_levels_vL1D():
 
 
 @pytest.mark.mem
-def test_mem_levels_LDS():
+def test_mem_levels_vL1D(binary_handler_profile_rocprof_compute):
     # only test 1 device for roofline
-    options = ["--device", "0", "--roof-only", "--mem-level", "LDS"]
+    options = ["--device", "0", "--roof-only", "--mem-level", "vL1D"]
     workload_dir = test_utils.get_output_dir()
-    e = binary_handler_profile_rocprof_compute(
-        config, workload_dir, options, check_success=False
+    returncode = binary_handler_profile_rocprof_compute(
+        config, workload_dir, options, check_success=False, roof=True
     )
 
     if soc == "MI100":
         # assert that it did not run
-        assert e.value.code >= 1
+        assert returncode >= 1
         # Do not continue testing
         return
 
     # assert successful run
-    assert e.value.code == 0
-    file_dict = test_utils.check_csv_files(workload_dir, num_devices, num_kernels)
+    assert returncode == 0
+    file_dict = test_utils.check_csv_files(workload_dir, 1, num_kernels)
+
+    if soc == "MI200" or "MI300" in soc:
+        assert sorted(list(file_dict.keys())) == ROOF_ONLY_FILES
+    else:
+        assert sorted(list(file_dict.keys())) == ALL_CSVS
+
+    validate(
+        inspect.stack()[0][3],
+        workload_dir,
+        file_dict,
+    )
+
+    test_utils.clean_output_dir(config["cleanup"], workload_dir)
+
+
+@pytest.mark.mem
+def test_mem_levels_LDS(binary_handler_profile_rocprof_compute):
+    # only test 1 device for roofline
+    options = ["--device", "0", "--roof-only", "--mem-level", "LDS"]
+    workload_dir = test_utils.get_output_dir()
+    returncode = binary_handler_profile_rocprof_compute(
+        config, workload_dir, options, check_success=False, roof=True
+    )
+
+    if soc == "MI100":
+        # assert that it did not run
+        assert returncode >= 1
+        # Do not continue testing
+        return
+
+    # assert successful run
+    assert returncode == 0
+    file_dict = test_utils.check_csv_files(workload_dir, 1, num_kernels)
 
     if soc == "MI200" or "MI300" in soc:
         assert sorted(list(file_dict.keys())) == ROOF_ONLY_FILES

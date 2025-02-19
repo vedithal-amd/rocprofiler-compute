@@ -385,8 +385,8 @@ add_custom_target(
     COMMAND
         ${Python3_EXECUTABLE} -m nuitka --mode=onefile
         --include-data-files=${PROJECT_SOURCE_DIR}/VERSION*=./ --enable-plugin=no-qt
-        --include-package-data=dash_svg --include-package=dash_bootstrap_components
-        --include-package=rocprof_compute_soc --include-package-data=rocprof_compute_soc
+        --include-package-data=dash_svg --include-package=dash_bootstrap_components --include-package=plotly
+        --include-package-data=kaleido --include-package=rocprof_compute_soc --include-package-data=rocprof_compute_soc
         --include-package-data=utils rocprof-compute
     # Remove library rpath from executable
     COMMAND patchelf --remove-rpath rocprof-compute.bin
