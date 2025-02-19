@@ -11,7 +11,8 @@ RUN yum install -y python38 python38-devel && \
     python3.8 get-pip.py
 
 CMD ["/bin/bash", "-c", "\
-    python3.8 -m pip install -r requirements.txt -r requirements-standalonebinary.txt \
+    python3.8 -m pip install -r requirements.txt \
+    && python3.8 -m pip install nuitka patchelf \
     && rm -rf build \
     && cmake -B build -S . \
     && make -C build standalonebinary \
