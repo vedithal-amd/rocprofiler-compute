@@ -527,7 +527,7 @@ def test_kernel_names(binary_handler_profile_rocprof_compute):
     # assert successful run
     assert returncode == 0
 
-    file_dict = test_utils.check_csv_files(workload_dir, 1 , num_kernels)
+    file_dict = test_utils.check_csv_files(workload_dir, 1, num_kernels)
     if soc == "MI200" or "MI300" in soc:
         assert sorted(list(file_dict.keys())) == sorted(
             ROOF_ONLY_FILES + ["kernelName_legend.pdf"]
