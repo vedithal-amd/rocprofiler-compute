@@ -86,11 +86,13 @@ def show_all(args, runs, archConfigs, output, profiling_config):
                 # If block filtering was used during analysis, then dont use profiling config
                 # If block filtering was used in profiling config, only show those panels
                 # If block filtering not used in profiling config, show all panels
+                # Skip this table if table id or panel id is not present in block filters
                 # However, always show panel id <= 100
                 if (
                     not args.filter_metrics
                     and filter_panel_ids
                     and table_config["id"] not in filter_panel_ids
+                    and panel_id not in filter_panel_ids
                     and panel_id > 100
                 ):
                     table_id_str = (
