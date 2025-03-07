@@ -228,6 +228,7 @@ Examples:
         metavar="",
         nargs="?",
         const="",
+        choices=supported_archs.keys(),  # ["gfx906", "gfx908", "gfx90a"],
         help=print_avail_arch(supported_archs.keys()),
     )
     profile_group.add_argument(
