@@ -80,7 +80,7 @@ interface with profiling results. View different metrics derived from your
 profiled results and get immediate access all metrics organized by hardware
 blocks.
 
-If you don't apply kernel, dispatch, or hardware block filters at this stage,
+If you don't apply kernel, dispatch, or hardware report block filters at this stage,
 analysis is reflective of the entirety of the profiling data.
 
 To interact with profiling results from a different session, provide the

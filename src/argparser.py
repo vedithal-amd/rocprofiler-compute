@@ -30,7 +30,7 @@ from pathlib import Path
 
 
 def print_avail_arch(avail_arch: list):
-    ret_str = "\t\tList all available metrics for analysis on specified arch:"
+    ret_str = "\t\t\tList all available metrics for analysis on specified arch:"
     for arch in avail_arch:
         ret_str += "\n\t\t   {}".format(arch)
     return ret_str
@@ -234,7 +234,7 @@ Examples:
         "--config-dir",
         dest="config_dir",
         metavar="",
-        help="\t\tSpecify the directory of customized report section configs.",
+        help="\t\t\tSpecify the directory of customized report section configs.",
         default=rocprof_compute_home.joinpath("rocprof_compute_soc/analysis_configs/"),
     )
 
