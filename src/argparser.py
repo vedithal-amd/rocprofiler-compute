@@ -32,7 +32,7 @@ from pathlib import Path
 def print_avail_arch(avail_arch: list):
     ret_str = "\t\t\tList all available metrics for analysis on specified arch:"
     for arch in avail_arch:
-        ret_str += "\n\t\t   {}".format(arch)
+        ret_str += "\n\t\t\t   {}".format(arch)
     return ret_str
 
 
