@@ -229,7 +229,7 @@ Examples:
         nargs="?",
         const="",
         # Argument to --list-metrics is optional
-        choices=[""]+list(supported_archs.keys()),  # ["gfx906", "gfx908", "gfx90a"],
+        choices=[""] + list(supported_archs.keys()),  # ["gfx906", "gfx908", "gfx90a"],
         help=print_avail_arch(supported_archs.keys()),
     )
     profile_group.add_argument(
