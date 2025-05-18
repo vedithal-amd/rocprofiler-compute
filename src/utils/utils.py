@@ -772,7 +772,7 @@ def run_prof(
             workload_dir + "/" + fbase + ".csv",
         )
         # Remove temp directory
-        shutil.rmtree(workload_dir + "/" + "out")
+        # shutil.rmtree(workload_dir + "/" + "out")
 
     # Standardize rocprof headers via overwrite
     # {<key to remove>: <key to replace>}
