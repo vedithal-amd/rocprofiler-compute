@@ -363,7 +363,8 @@ class RocProfCompute_Base:
         input_files = glob.glob(self.get_args().path + "/perfmon/*.txt")
         input_files.sort()
 
-        for fname in tqdm(input_files, disable=disable_tqdm):
+        # fname is a list
+        for fname in tqdm([input_files], disable=disable_tqdm):
             # Kernel filtering (in-place replacement)
             if not self.__args.kernel == None:
                 success, output = capture_subprocess_output(
@@ -403,7 +404,7 @@ class RocProfCompute_Base:
                     console_error(output)
                 else:
                     console_debug(output)
-            console_log("profiling", "Current input file: %s" % fname)
+            console_log("profiling", "Current input file: %s" % str(fname))
 
             options = self.get_profiler_options(fname, self._soc)
             if (
@@ -424,7 +425,7 @@ class RocProfCompute_Base:
                 end_run_prof = time.time()
                 console_debug(
                     "The time of run_prof of {} is {} m {} sec".format(
-                        fname,
+                        str(fname),
                         int((end_run_prof - start_run_prof) / 60),
                         str((end_run_prof - start_run_prof) % 60),
                     )

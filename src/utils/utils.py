@@ -626,16 +626,21 @@ def run_prof(
     fname, profiler_options, workload_dir, mspec, loglevel, format_rocprof_output
 ):
     time_0 = time.time()
-    fbase = path(fname).stem
+    # fbase = path(fname).stem
+    fbase = "testing"
 
-    console_debug("pmc file: %s" % path(fname).name)
+    #console_debug("pmc file: %s" % path(fname).name)
+    console_debug("pmc file: %s" % str(fname))
 
-    path_counter_config_yaml = path(fname).with_suffix(".yaml")
+    # path_counter_config_yaml = path(fname).with_suffix(".yaml")
     # standard rocprof options
     if rocprof_cmd == "rocprofiler-sdk":
         options = profiler_options
         options["ROCPROF_COUNTER_COLLECTION"] = "1"
-        options["ROCPROF_COUNTERS"] = "pmc: " + " ".join(parse_text(fname))
+        # options["ROCPROF_COUNTERS"] = "pmc: " + " ".join(parse_text(fname))
+        options["ROCPROF_COUNTER_GROUPS_INTERVAL"] = "1"
+        options["ROCPROF_COUNTER_GROUPS"] = ["pmc: " + " ".join(parse_text(name)) for name in fname]
+        options["ROCPROF_COUNTER_GROUPS"] = "\n".join(options["ROCPROF_COUNTER_GROUPS"])
     else:
         default_options = ["-i", fname]
         options = default_options + profiler_options
@@ -646,12 +651,12 @@ def run_prof(
         else:
             options = ["-A", "absolute"] + options
 
-    if using_v3() and path_counter_config_yaml.exists():
-        if rocprof_cmd == "rocprofiler-sdk":
-            with open(path_counter_config_yaml, "r") as file:
-                options["ROCPROF_EXTRA_COUNTERS_CONTENTS"] = file.read()
-        else:
-            options = ["-E", str(path_counter_config_yaml)] + options
+    # if using_v3() and path_counter_config_yaml.exists():
+    #     if rocprof_cmd == "rocprofiler-sdk":
+    #         with open(path_counter_config_yaml, "r") as file:
+    #             options["ROCPROF_EXTRA_COUNTERS_CONTENTS"] = file.read()
+    #     else:
+    #         options = ["-E", str(path_counter_config_yaml)] + options
 
     # set required env var for mi300
     new_env = None
@@ -660,8 +665,8 @@ def run_prof(
         new_env["ROCPROFILER_INDIVIDUAL_XCC_MODE"] = "1"
 
     is_timestamps = False
-    if path(fname).name == "timestamps.txt":
-        is_timestamps = True
+    # if path(fname).name == "timestamps.txt":
+    #     is_timestamps = True
     time_1 = time.time()
 
     if rocprof_cmd == "rocprofiler-sdk":
@@ -688,7 +693,7 @@ def run_prof(
     time_2 = time.time()
     console_debug(
         "Finishing subprocess of fname {}, the time it takes was {} m {} sec ".format(
-            fname, int((time_2 - time_1) / 60), str((time_2 - time_1) % 60)
+            str(fname), int((time_2 - time_1) / 60), str((time_2 - time_1) % 60)
         )
     )
 
