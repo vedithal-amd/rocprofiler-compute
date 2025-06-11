@@ -345,6 +345,12 @@ class RocProfCompute:
     @demarcate
     def update_db(self):
         self.print_graphic()
+
+        console_warning(
+            "Database update mode is deprecated and will be removed in a future release "
+            "and no fixes will be made for this mode."
+        )
+
         from utils.db_connector import DatabaseConnector
 
         db_connection = DatabaseConnector(self.__args)
