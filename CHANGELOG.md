@@ -29,19 +29,21 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 
 * Roofline support for MI350 series architecture
 
-#### Textual User Interface (TUI)
+#### Textual User Interface (TUI) (beta version)
 
-* Add rocprof-compute Text User Interface (TUI) support for analyze mode (beta version)
+* Add rocprof-compute Text User Interface (TUI) support for analyze mode
   * A command line based user interface to support interactive single-run analysis
   * launch with `--tui` option in analyze mode. i.e., `rocprof-compute analyze --tui`
 
-#### PC Sampling
+#### PC Sampling (beta version)
 
 * Stochastic (hardware-based) PC sampling has been enabled for AMD Instinct MI300X series and later accelerators.
 
-* Sorting of PC sampling by type: offset or count.
+* Host-trap PC Sampling has been enabled for AMD Instinct MI200 series and later accelerators.
 
-* Support host-trap PC Sampling on CLI (beta version)
+* Support sorting of PC sampling by type: offset or count.
+
+* PC Sampling Support on CLI and TUI
 
 #### Roofline
 
