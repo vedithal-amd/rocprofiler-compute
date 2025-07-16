@@ -6,33 +6,7 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 
 ### Added
 
-* Support Roofline plot on CLI (single run)
-
-* Stochastic (hardware-based) PC sampling has been enabled for AMD Instinct MI300X series and later accelerators.
-
-* Sorting of PC sampling by type: offset or count.
-
-* Add rocprof-compute Text User Interface (TUI) support for analyze mode (beta version)
-  * A command line based user interface to support interactive single-run analysis
-  * launch with `--tui` option in analyze mode. i.e., `rocprof-compute analyze --tui`
-
-* Add support to be able to acquire from rocprofv3 every single channle on each XCD of TCC counters
-
-* Add Docker files to package the application and dependencies into a single portable and executable standalone binary file
-
-* Analysis report based filtering
-  * -b option in profile mode now additionally accepts metric id(s) for analysis report based filtering
-  * -b option in profile mode also accept hardware IP block for filtering, however, this support will be deprecated soon
-  * --list-metrics option added in profile mode to list possible metric id(s), similar to analyze mode
-
-* Datatype selection option for roofline profiling
-  * --roofline-data-type / -R option added to specify which datatypes the user wants to capture in the roofline PDF plot outputs
-  * Default is FP32, but user can specify as many types as desired to overlay on the same plot output
-
-* Additional datatypes for roofline profiling
-  * Now supports FP4, FP6, FP8, FP16, BF16, FP32, FP64, I8, I32, I64 (dependent on gpu architecture)
-
-* Support host-trap PC Sampling on CLI (beta version)
+#### MI 350
 
 * Support for AMD Instinct MI350 series GPUs with the addition of the following counters:
   * VALU co-issue (Two VALUs are issued instructions) efficiency
@@ -53,9 +27,50 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
   * L2 to EA stalls
   * L2 to EA stalls per channel
 
+* Roofline support for MI350 series architecture
+
+#### Textual User Interface (TUI)
+
+* Add rocprof-compute Text User Interface (TUI) support for analyze mode (beta version)
+  * A command line based user interface to support interactive single-run analysis
+  * launch with `--tui` option in analyze mode. i.e., `rocprof-compute analyze --tui`
+
+#### PC Sampling
+
+* Stochastic (hardware-based) PC sampling has been enabled for AMD Instinct MI300X series and later accelerators.
+
+* Sorting of PC sampling by type: offset or count.
+
+* Support host-trap PC Sampling on CLI (beta version)
+
+#### Roofline
+
+* Support Roofline plot on CLI (single run)
+
+* Datatype selection option for roofline profiling
+  * --roofline-data-type / -R option added to specify which datatypes the user wants to capture in the roofline PDF plot outputs
+  * Default is FP32, but user can specify as many types as desired to overlay on the same plot output
+
 * Roofline support for RHEL 10
 
-* Roofline support for MI350 series architecture
+* Additional datatypes for roofline profiling
+  * Now supports FP4, FP6, FP8, FP16, BF16, FP32, FP64, I8, I32, I64 (dependent on gpu architecture)
+
+### rocprofv3 support
+
+* rocprofv3 is not the default backend for profiling
+* Add support to obtain performance information for all channels for TCC counters
+* Add support for profiling on MI 100 with rocprofv3
+* Add deprecation warning for rocprofv3 interface in favor of rocprofiler-sdk interface which directly accesses rocprofv3 C++ tool
+
+#### Others
+
+* Add Docker files to package the application and dependencies into a single portable and executable standalone binary file
+
+* Analysis report based filtering
+  * -b option in profile mode now additionally accepts metric id(s) for analysis report based filtering
+  * -b option in profile mode also accept hardware IP block for filtering, however, this support will be deprecated soon
+  * --list-metrics option added in profile mode to list possible metric id(s), similar to analyze mode
 
 * Interface to rocprofiler-sdk
   * Setting ROCPROF=rocprofiler-sdk environment variable will use rocprofiler-sdk C++ library instead of rocprofv3 python script
@@ -66,18 +81,15 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 
 * Add deprecation warning for database update mode.
 
+* Add --specs-correction option to provide missing system specification for analysis
+
 ### Changed
 
 * Change the default rocprof version to rocprofv3, this is used when environment variable "ROCPROF" is not set
-* Change the rocprof version for unit tests to rocprofv3 on all SoCs except MI100
 * Change normal_unit default to per_kernel
-* Change dependency from rocm-smi to amd-smi
 * Decrease profiling time by not collecting counters not used in post analysis
-* Update definition of following metrics for MI 350:
-  * VGPR Writes
-  * Total FLOPs (consider fp6 and fp4 ops)
 * Update Dash to >=3.0.0 (for web UI)
-* Change when Roofline PDFs are generated- during general profiling and --roof-only profiling (skip only when --no-roof option is present)
+* Change when Roofline PDFs are generated during general profiling and --roof-only profiling (skip only when --no-roof option is present)
 * Update Roofline binaries
   * Rebuild using latest ROCm stack
   * OS distribution support minimum for roofline feature is now Ubuntu22.04, RHEL9, and SLES15SP6
@@ -88,9 +100,7 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 
 ### Resolved issues
 
-* Fixed MI 100 counters not being collected when rocprofv3 is used
-* Fixed option specs-correction
-* Fixed kernel name and kernel dispatch filtering when using rocprof v3
+* Fixed kernel name and kernel dispatch filtering when using rocprofv3
 * Fixed not collecting TCC channel counters in rocprof v3
 * Fixed peak FLOPS of F8 I8 F16 and BF16 on MI300
 
