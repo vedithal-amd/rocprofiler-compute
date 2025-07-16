@@ -81,7 +81,7 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 
 * Support MEM chart on CLI (single run)
 
-* Add deprecation warning for database update mode.
+* Add deprecation warning for MongoDB database update mode.
 
 * Add --specs-correction option to provide missing system specification for analysis
 
