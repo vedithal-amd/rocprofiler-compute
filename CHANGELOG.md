@@ -49,10 +49,6 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 
 * Support Roofline plot on CLI (single run)
 
-* Datatype selection option for roofline profiling
-  * --roofline-data-type / -R option added to specify which datatypes the user wants to capture in the roofline PDF plot outputs
-  * Default is FP32, but user can specify as many types as desired to overlay on the same plot output
-
 * Roofline support for RHEL 10
 
 * Additional datatypes for roofline profiling
