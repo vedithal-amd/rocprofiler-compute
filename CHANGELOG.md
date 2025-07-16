@@ -6,7 +6,7 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 
 ### Added
 
-#### MI 350
+#### CDNA4 (MI350/MI355)
 
 * Support for AMD Instinct MI350 series GPUs with the addition of the following counters:
   * VALU co-issue (Two VALUs are issued instructions) efficiency
@@ -126,6 +126,23 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 ### Removed
 
 * Roofline support for Ubuntu 20.04 and SLES below 15.6
+
+## ROCm Compute Profiler 3.1.1 for ROCm 6.4.2
+
+### Added
+
+* 8-bit floating point (FP8) metrics support for AMD Instinct MI300 GPUs.
+* Additional data types for roofline: FP8, FP16, BF16, FP32, FP64, I8, I32, I64 (dependent on the GPU architecture).
+* Data type selection option ``--roofline-data-type / -R`` for roofline profiling. The default data type is FP32.
+
+### Changed
+
+* Change dependency from `rocm-smi` to `amd-smi`.
+
+### Resolved issues
+
+* Fixed a crash related to Agent ID caused by the new format of the `rocprofv3` output CSV file.
+
 
 ## ROCm Compute Profiler 3.1.0 for ROCm 6.4.0
 
