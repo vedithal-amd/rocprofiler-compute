@@ -56,7 +56,7 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 * Additional datatypes for roofline profiling
   * Now supports FP4, FP6, FP8, FP16, BF16, FP32, FP64, I8, I32, I64 (dependent on gpu architecture)
 
-### rocprofv3 support
+#### rocprofv3 support
 
 * rocprofv3 is not the default backend for profiling
 * Add support to obtain performance information for all channels for TCC counters
