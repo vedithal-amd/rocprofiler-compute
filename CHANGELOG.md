@@ -60,7 +60,7 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 
 #### rocprofv3 support
 
-* rocprofv3 is not the default backend for profiling
+* rocprofv3 is the default backend for profiling
 * Add support to obtain performance information for all channels for TCC counters
 * Add support for profiling on MI 100 with rocprofv3
 * Add deprecation warning for rocprofv3 interface in favor of rocprofiler-sdk interface which directly accesses rocprofv3 C++ tool
