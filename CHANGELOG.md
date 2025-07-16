@@ -14,7 +14,7 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
   * Scheduler-Pipe Wave Utilization
   * Scheduler FIFO Full Rate
   * CPC ADC Utilization
-  * F6F4 datatype metrics
+  * F6F4 data type metrics
   * Update formula for total FLOPs while taking into account F6F4 ops
   * LDS STORE, LDS LOAD, LDS ATOMIC instruction count metrics
   * LDS STORE, LDS LOAD, LDS ATOMIC bandwidth metrics
@@ -51,7 +51,7 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 
 * Roofline support for RHEL 10
 
-* Additional datatypes for roofline profiling
+* Additional data types for roofline profiling
   * Now supports FP4, FP6, FP8, FP16, BF16, FP32, FP64, I8, I32, I64 (dependent on gpu architecture)
 
 #### rocprofv3 support
