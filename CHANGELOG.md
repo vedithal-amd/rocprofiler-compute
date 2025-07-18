@@ -79,6 +79,8 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 
 * Add deprecation warning for MongoDB database update mode.
 
+* Add deprecation warning for rocm-smi
+
 * Add --specs-correction option to provide missing system specification for analysis
 
 ### Changed
@@ -122,6 +124,7 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 ### Removed
 
 * Roofline support for Ubuntu 20.04 and SLES below 15.6
+* Remove support for MI50/MI60 in accordance with the documentation
 
 ## ROCm Compute Profiler 3.1.1 for ROCm 6.4.2
 
