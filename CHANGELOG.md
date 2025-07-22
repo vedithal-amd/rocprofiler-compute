@@ -6,7 +6,7 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 
 ### Added
 
-#### CDNA4 (MI350/MI355)
+#### CDNA4 (AMD Instinct MI350/MI355) support
 
 * Support for AMD Instinct MI350 series GPUs with the addition of the following counters:
   * VALU co-issue (Two VALUs are issued instructions) efficiency
@@ -27,13 +27,13 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
   * L2 to EA stalls
   * L2 to EA stalls per channel
 
-* Roofline support for MI350 series architecture
+* Roofline support for AMD Instinct MI350 series architecture.
 
 #### Textual User Interface (TUI) (beta version)
 
-* Add rocprof-compute Text User Interface (TUI) support for analyze mode
+* Text User Interface (TUI) support for analyze mode
   * A command line based user interface to support interactive single-run analysis
-  * launch with `--tui` option in analyze mode. i.e., `rocprof-compute analyze --tui`
+  * To launch, use `--tui` option in analyze mode. For example, ``rocprof-compute analyze --tui``.
 
 #### PC Sampling (beta version)
 
@@ -41,58 +41,58 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 
 * Host-trap PC Sampling has been enabled for AMD Instinct MI200 series and later accelerators.
 
-* Support sorting of PC sampling by type: offset or count.
+* Support for sorting of PC sampling by type: offset or count.
 
-* PC Sampling Support on CLI and TUI
+* PC Sampling Support on CLI and TUI analysis.
 
 #### Roofline
 
-* Support Roofline plot on CLI (single run)
+* Support for Roofline plot on CLI (single run) analysis.
 
-* Roofline support for RHEL 10
+* Roofline support for RHEL 10 OS.
 
 * Additional data types for roofline profiling
   * Now supports FP4, FP6, FP8, FP16, BF16, FP32, FP64, I8, I32, I64 (dependent on gpu architecture)
 
 #### rocprofv3 support
 
-* rocprofv3 is the default backend for profiling
-* Add support to obtain performance information for all channels for TCC counters
-* Add support for profiling on MI 100 with rocprofv3
-* Add deprecation warning for rocprofv3 interface in favor of rocprofiler-sdk interface which directly accesses rocprofv3 C++ tool
+* ``rocprofv3`` is supported as the default backend for profiling.
+* Support to obtain performance information for all channels for TCC counters.
+* Support for profiling on AMD Instinct MI 100 using ``rocprofv3``.
+* Deprecation warning for ``rocprofv3`` interface in favor of the ROCprofiler-SDK interface, which directly accesses ``rocprofv3`` C++ tool.
 
 #### Others
 
-* Add Docker files to package the application and dependencies into a single portable and executable standalone binary file
+* Docker files to package the application and dependencies into a single portable and executable standalone binary file.
 
 * Analysis report based filtering
-  * -b option in profile mode now additionally accepts metric id(s) for analysis report based filtering
-  * -b option in profile mode also accept hardware IP block for filtering, however, this support will be deprecated soon
-  * --list-metrics option added in profile mode to list possible metric id(s), similar to analyze mode
+  * ``-b`` option in profile mode now also accepts metric id(s) for analysis report based filtering.
+  * ``-b`` option in profile mode also accepts hardware IP block for filtering; however, this filter support will be deprecated soon.
+  * ``--list-metrics`` option added in profile mode to list possible metric id(s), similar to analyze mode.
 
-* Interface to rocprofiler-sdk
-  * Setting ROCPROF=rocprofiler-sdk environment variable will use rocprofiler-sdk C++ library instead of rocprofv3 python script
+* Interface to ROCprofiler-SDK.
+  * Setting the environment variable ``ROCPROF=rocprofiler-sdk`` will use ROCprofiler-SDK C++ library instead of ``rocprofv3`` python script.
   * Add --rocprofiler-sdk-library-path runtime option to choose the path to rocprofiler-sdk library to be used
   * Using rocprof v1 / v2 / v3 interfaces will trigger a deprecation warning to use rocprofiler-sdk interface
 
 * Support MEM chart on CLI (single run)
 
-* Add deprecation warning for MongoDB database update mode.
+* Deprecation warning for MongoDB database update mode.
 
-* Add deprecation warning for rocm-smi
+* Deprecation warning for ``rocm-smi``
 
-* Add --specs-correction option to provide missing system specification for analysis
+* ``--specs-correction`` option to provide missing system specifications for analysis.
 
 ### Changed
 
 * Change the default rocprof version to rocprofv3, this is used when environment variable "ROCPROF" is not set
-* Change normal_unit default to per_kernel
-* Decrease profiling time by not collecting counters not used in post analysis
-* Update Dash to >=3.0.0 (for web UI)
-* Change when Roofline PDFs are generated during general profiling and --roof-only profiling (skip only when --no-roof option is present)
-* Update Roofline binaries
+* Changed ``normal_unit`` default to ``per_kernel``.
+* Decreased profiling time by not collecting unused counters in post-analysis.
+* Updated Dash to >=3.0.0 (for web UI).
+* Changed the condition when Roofline PDFs are generated during general profiling and ``--roof-only`` profiling (skip only when ``--no-roof`` option is present).
+* Updated Roofline binaries:
   * Rebuild using latest ROCm stack
-  * OS distribution support minimum for roofline feature is now Ubuntu22.04, RHEL9, and SLES15SP6
+  * Minimum OS distribution support minimum for roofline feature is now Ubuntu 22.04, RHEL 9, and SLES15 SP6.
 
 ### Optimized
 
@@ -100,9 +100,9 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 
 ### Resolved issues
 
-* Fixed kernel name and kernel dispatch filtering when using rocprofv3
-* Fixed not collecting TCC channel counters in rocprof v3
-* Fixed peak FLOPS of F8 I8 F16 and BF16 on MI300
+* Fixed kernel name and kernel dispatch filtering when using ``rocprofv3``.
+* Fixed an issue of TCC channel counters collection in ``rocprofv3``.
+* Fixed peak FLOPS of F8, I8, F16, and BF16 on AMD Instinct MI 300.
 
 ### Known issues
 
@@ -124,7 +124,7 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 ### Removed
 
 * Roofline support for Ubuntu 20.04 and SLES below 15.6
-* Remove support for MI50/MI60 in accordance with the documentation
+* Removed support for AMD Instinct MI50 and MI60 in accordance with the documentation.
 
 ## ROCm Compute Profiler 3.1.1 for ROCm 6.4.2
 
