@@ -51,8 +51,7 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 
 * Roofline support for RHEL 10 OS.
 
-* Additional data types for roofline profiling
-  * Now supports FP4, FP6, FP8, FP16, BF16, FP32, FP64, I8, I32, I64 (dependent on gpu architecture)
+* FP4 and FP6 data types have been added for roofline profiling on AMD Instinct MI350 series.
 
 #### rocprofv3 support
 
@@ -85,7 +84,7 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 
 ### Changed
 
-* Change the default rocprof version to rocprofv3, this is used when environment variable "ROCPROF" is not set
+* Changed the default ``rocprof`` version to ``rocprofv3``. This is used when environment variable ``ROCPROF`` is not set.
 * Changed ``normal_unit`` default to ``per_kernel``.
 * Decreased profiling time by not collecting unused counters in post-analysis.
 * Updated Dash to >=3.0.0 (for web UI).
@@ -106,25 +105,33 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 
 ### Known issues
 
-* On MI 100, accumulation counters will not be collected and the following metrics will not show up in analysis: Instruction Fetch Latency, Wavefront Occupancy, LDS Latency
-  * As a workaround, use ROCPROF=rocprof environement variable, to use rocprofv1 for profiling on MI 100
+* On AMD Instinct MI100, accumulation counters are not collected, resulting in the following metrics failing to show up in the analysis: Instruction Fetch Latency, Wavefront Occupancy, LDS Latency
+  * As a workaround, use the environment variable ``ROCPROF=rocprof``, to use ``rocprof v1`` for profiling on AMD Instinct MI100.
 
-* GPU id filtering is not supported when using rocprof v3
+* GPU id filtering is not supported when using ``rocprofv3``.
 
-* Analysis of previously collected workload data will not work due to sysinfo.csv schema change
-  * As a workaround, run the profiling operation again for the workload and interrupt the process after ten seconds.
-    Followed by copying the `sysinfo.csv` file from the new data folder to the old one.
-    This assumes your system specification hasn't changed since the creation of the previous workload data.
+* Analysis of previously collected workload data will not work due to sysinfo.csv schema change.
+  * As a workaround, re-run the profiling operation for the workload and interrupt the process after 10 seconds.
+  Followed by copying the ``sysinfo.csv`` file from the new data folder to the old one.
+  This assumes your system specification hasn't changed since the creation of the previous workload data.
 
 * Analysis of new workloads might require providing shader/memory clock speed using
---specs-correction operation if `amd-smi` or `rocminfo` does not provide clock speeds.
+``--specs-correction`` operation if amd-smi or rocminfo does not provide clock speeds.
 
-* Memory chart on CLI might look corrupted if CLI width is too narrow
+* Memory chart on ROCm Compute Profiler CLI might look corrupted if the CLI width is too narrow.
 
 ### Removed
 
 * Roofline support for Ubuntu 20.04 and SLES below 15.6
-* Removed support for AMD Instinct MI50 and MI60 in accordance with the documentation.
+* Removed support for AMD Instinct MI50 and MI60.
+
+### Upcoming changes
+
+* ``rocprof v1/v2/v3`` interfaces will be removed in favor of the ROCprofiler-SDK interface, which directly accesses ``rocprofv3`` C++ tool.
+* Hardware IP block based filtering using ``-b`` option in profile mode will be removed in favor of analysis report block based filtering using ``-b`` option in profile mode.
+* Using rocprof v1 / v2 / v3 interfaces will trigger a deprecation warning to use rocprofiler-sdk interface
+* MongoDB database support will be removed.
+* Usage of ``rocm-smi`` will be removed in favor of ``amd-smi``.
 
 ## ROCm Compute Profiler 3.1.1 for ROCm 6.4.2
 
