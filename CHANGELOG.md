@@ -6,7 +6,7 @@ Full documentation for ROCm Compute Profiler is available at [https://rocm.docs.
 
 ### Added
 
-#### CDNA3 (AMD Instinct MI350/MI355) support
+#### CDNA4 (AMD Instinct MI350/MI355) support
 
 * Support for AMD Instinct MI350 series GPUs with the addition of the following counters:
   * VALU co-issue (Two VALUs are issued instructions) efficiency
