@@ -494,6 +494,13 @@ class OmniSoC_Base:
                     rocprof_counters.update(counters)
 
         elif str(rocprof_cmd).endswith("rocprofv3"):
+            # Point to rocprofiler sdk counter definition
+            old_rocprofiler_metrics_path = os.environ.get("ROCPROFILER_METRICS_PATH")
+            os.environ["ROCPROFILER_METRICS_PATH"] = str(
+                config.rocprof_compute_home
+                / "rocprof_compute_soc"
+                / "profile_configs"
+            )
             command = [rocprof_cmd, "--list-avail"]
             success, output = capture_subprocess_output(command, enable_logging=False)
             # return code should be 0 so success should be True
@@ -505,28 +512,20 @@ class OmniSoC_Base:
                 if "counter_name" in line:
                     counters, _ = self.parse_counters_text(line.split(":")[1].strip())
                     rocprof_counters.update(counters)
-            # Custom counter support for mi100 for rocprofv3
-            if self._mspec.gpu_model.lower() == "mi100":
-                counter_defs_path = (
-                    config.rocprof_compute_home
-                    / "rocprof_compute_soc"
-                    / "profile_configs"
-                    / "gfx908_counter_defs.yaml"
-                )
-                with open(counter_defs_path, "r") as fp:
-                    counter_defs_contents = fp.read()
-                counters, _ = self.parse_counters_text(counter_defs_contents)
-                rocprof_counters.update(counters)
+            # Reset env. var.
+            if old_rocprofiler_metrics_path is None:
+                del os.environ["ROCPROFILER_METRICS_PATH"]
+            else:
+                os.environ["ROCPROFILER_METRICS_PATH"] = old_rocprofiler_metrics_path
 
         elif str(rocprof_cmd) == "rocprofiler-sdk":
             # Point to rocprofiler sdk counter definition
             old_rocprofiler_metrics_path = os.environ.get("ROCPROFILER_METRICS_PATH")
             os.environ["ROCPROFILER_METRICS_PATH"] = str(
-                Path(self.get_args().rocprofiler_sdk_library_path)
-                .resolve()
-                .parent.parent.joinpath("share", "rocprofiler-sdk")
+                config.rocprof_compute_home
+                / "rocprof_compute_soc"
+                / "profile_configs"
             )
-
             sys.path.append(
                 str(
                     Path(self.get_args().rocprofiler_sdk_library_path).parent.parent
@@ -534,7 +533,6 @@ class OmniSoC_Base:
                 )
             )
             from rocprofv3_avail_module import avail
-
             avail.loadLibrary.libname = str(
                 Path(self.get_args().rocprofiler_sdk_library_path).parent.parent
                 / "lib"
@@ -547,19 +545,6 @@ class OmniSoC_Base:
                 for counter in counters[list(counters.keys())[0]]
                 if hasattr(counter, "block") or hasattr(counter, "expression")
             }
-            # Custom counter support for mi100 for rocprofiler-sdk
-            if self._mspec.gpu_model.lower() == "mi100":
-                counter_defs_path = (
-                    config.rocprof_compute_home
-                    / "rocprof_compute_soc"
-                    / "profile_configs"
-                    / "gfx908_counter_defs.yaml"
-                )
-                with open(counter_defs_path, "r") as fp:
-                    counter_defs_contents = fp.read()
-                counters, _ = self.parse_counters_text(counter_defs_contents)
-                rocprof_counters.update(counters)
-
             # Reset env. var.
             if old_rocprofiler_metrics_path is None:
                 del os.environ["ROCPROFILER_METRICS_PATH"]
