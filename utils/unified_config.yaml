@@ -16,6 +16,7 @@ panels:
   data source:
   - raw_csv_table:
       id: 101
+      title: System Info
       source: sysinfo.csv
       columnwise: true
 - id: 200
@@ -12378,7 +12379,7 @@ panels:
         avg: Avg
         min: Min
         max: Max
-        units: Units
+        units: Unit
       metric:
         gfx90a:
           Req:
@@ -12572,7 +12573,7 @@ panels:
         avg: Avg
         min: Min
         max: Max
-        units: Units
+        units: Unit
       metric:
         gfx90a: {}
         gfx941: {}
