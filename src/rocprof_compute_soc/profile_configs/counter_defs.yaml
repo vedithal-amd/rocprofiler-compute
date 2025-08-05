@@ -7301,6 +7301,7 @@ rocprofiler-sdk:
     properties: []
     definitions:
     - architectures:
+      - gfx908
       - gfx90a
       block: TCC
       event: 35
